@@ -1,0 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - dev
+  paths:
+    include:
+      - 'jpo-conflictmonitor/*'
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '.'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  # Publish the artifacts directory for consumption in publish pipeline
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'jpo-ode'
+      publishLocation: 'Container'
