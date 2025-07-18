@@ -2,14 +2,19 @@ package us.dot.its.jpo.conflictmonitor.monitor.models;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This class represents a unique identifier for a combination of an intersectionID and roadRegulatorId (region)
+ */
 @Getter
+@Setter
 @EqualsAndHashCode()
 @ToString
-public class RegulatorIntersectionId {
-    Integer roadRegulatorId;
-    Integer intersectionId;
+public class RegulatorIntersectionId implements Comparable<RegulatorIntersectionId>{
+    int roadRegulatorId = -1;
+    int intersectionId = -1;
 
     public void setRoadRegulatorId(Integer roadRegulatorId){
         if(roadRegulatorId != null){
@@ -27,4 +32,12 @@ public class RegulatorIntersectionId {
         }
     }
 
+    @Override
+    public int compareTo(RegulatorIntersectionId other) {
+        if (other == null) return 1;
+        if (this.roadRegulatorId != other.roadRegulatorId) {
+            return Integer.compare(this.roadRegulatorId, other.roadRegulatorId);
+        }
+        return Integer.compare(this.intersectionId, other.intersectionId);
+    }
 }

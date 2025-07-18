@@ -1,6 +1,5 @@
 package us.dot.its.jpo.conflictmonitor.monitor.algorithms.validation.spat;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -86,6 +85,11 @@ public class SpatValidationParameters {
         description = "Whether to log diagnostic information for debugging", 
         updateType = DEFAULT)
     boolean debug;
+
+    @ConfigData(key = "spat.validation.aggregateEvents",
+            description = "Whether to aggregate output minimum data events, or to send each individual event",
+            updateType = READ_ONLY)
+    boolean aggregateMinimumDataEvents;
    
     
     // Maps for parameters that can be customized per intersection

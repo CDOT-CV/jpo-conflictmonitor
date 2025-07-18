@@ -4,8 +4,8 @@ on:
   push:
     tags:
       - 'jpo-conflictmonitor-*'
-  pull_request:
-    types: [opened, reopened, synchronize]
+  release:
+    types: [published]
     
 
 jobs:
@@ -21,6 +21,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+        cache: 'maven'
 
     - name: Remove snapshot from version
       run: |

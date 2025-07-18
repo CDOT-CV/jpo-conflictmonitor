@@ -7,7 +7,6 @@ import lombok.Generated;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.ConfigData;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.ConfigDataClass;
 import static us.dot.its.jpo.conflictmonitor.monitor.models.config.UpdateType.*;
-import static us.dot.its.jpo.conflictmonitor.monitor.models.config.UnitsEnum.*;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -48,5 +47,16 @@ public class SpatTimeChangeDetailsParameters {
         description = "The number of SPAT messages to buffer for jitter calculation", 
         updateType = DEFAULT)
     int jitterBufferSize;
-    
+
+    @ConfigData(key = "spat.time.change.details.aggregateEvents",
+        description = "Whether to aggregate events",
+        updateType = READ_ONLY)
+    boolean aggregateEvents;
+
+    @ConfigData(key = "spat.time.change.details.aggNotificationTopicName",
+        description = "The name of the topic to write aggregated notifications to",
+        updateType = READ_ONLY)
+    String aggNotificationTopicName;
+
+
 }
