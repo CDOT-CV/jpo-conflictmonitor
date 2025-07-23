@@ -463,8 +463,7 @@ public class MapSpatMessageAssessmentTopology
                                                 event.setConflictType(laneState);
                                             }
 
-                                            System.out.println("Generating Event" + event);
-                                            events.add(new KeyValue<String, SignalStateConflictEvent>(key.toString(), event));
+                                            events.add(new KeyValue<RsuIntersectionKey, SignalStateConflictEvent>(key, event));
                                         }
                                     }
                                 }
