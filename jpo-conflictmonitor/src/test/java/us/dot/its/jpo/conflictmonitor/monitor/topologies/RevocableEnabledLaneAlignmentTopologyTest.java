@@ -9,9 +9,9 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.metrics.CommonMetricsParameters;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.metrics.dynamic_lane_activation.DynamicLaneActivationMetricsAlgorithm;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.metrics.dynamic_lane_activation.DynamicLaneActivationMetricsParameters;
@@ -31,39 +31,29 @@ import us.dot.its.jpo.geojsonconverter.serialization.deserializers.JsonDeseriali
 import us.dot.its.jpo.geojsonconverter.serialization.serializers.JsonSerializer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 
 @Slf4j
-@RunWith(Parameterized.class)
 public class RevocableEnabledLaneAlignmentTopologyTest {
 
-    final SpatMap spatMap;
-    final boolean expectEvent;
-
-    public RevocableEnabledLaneAlignmentTopologyTest(SpatMap spatMap, boolean expectEvent) {
-        this.spatMap = spatMap;
-        this.expectEvent = expectEvent;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> getParameters() throws JsonProcessingException {
-        var params = new ArrayList<Object[]>();
+    static Stream<Arguments> getParameters() throws JsonProcessingException {
+        var params = new ArrayList<Arguments>();
         params.add(params("RevocableLanes_ProcessedSpat_non_revocable_enabled.json", true));
         params.add(params("RevocableLanes_ProcessedSpat_non_existent_enabled.json", true));
         params.add(params("RevocableLanes_ProcessedSpat_no_event_1.json", false));
         params.add(params("RevocableLanes_ProcessedSpat_no_event_2.json", false));
-        return params;
+        return params.stream();
     }
 
-    private static Object[] params(final String spatResourceName, final boolean expectEvent)
+    private static Arguments params(final String spatResourceName, final boolean expectEvent)
             throws JsonProcessingException {
-        return new Object[] { getSpatMap(spatResourceName), expectEvent};
+        return Arguments.of(getSpatMap(spatResourceName), expectEvent);
     }
 
     final Properties streamsProperties = new Properties();
@@ -77,8 +67,9 @@ public class RevocableEnabledLaneAlignmentTopologyTest {
     final String rsuId = "172.18.0.1";
     final int intersectionId = 3416;
 
-    @Test
-    public void testRevocableEnabledLaneAlignmentTopology() throws JsonProcessingException {
+    @ParameterizedTest
+    @MethodSource("getParameters")
+    public void testRevocableEnabledLaneAlignmentTopology(SpatMap spatMap, boolean expectEvent) throws JsonProcessingException {
 
         Topology topology = createTopology();
 

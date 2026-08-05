@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.DefaultConfig;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.UnitsEnum;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.UpdateType;
@@ -16,16 +15,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Slf4j
-@RunWith(Parameterized.class)
 public class GenericJsonStringDeserializerTest
     extends BaseGenericJsonDeserializerTest {
-    public GenericJsonStringDeserializerTest(String configString, Object expectedValue, String expectedType) {
-        super(configString, expectedValue, expectedType);
-    }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("getParams")
     @Override
-    public void testDeserialize() {
+    public void testDeserialize(String configString, Object expectedValue, String expectedType) {
         log.info("testDeserialize: {}", configString);
         GenericJsonStringDeserializer<DefaultConfig<?>> deserializer
                 = new GenericJsonStringDeserializer<>(DefaultConfig.class);

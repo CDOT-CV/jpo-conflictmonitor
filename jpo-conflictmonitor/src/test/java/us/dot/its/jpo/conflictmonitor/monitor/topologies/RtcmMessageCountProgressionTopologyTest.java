@@ -8,13 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.rtcm_message_count_progression.RtcmMessageCountProgressionParameters;
 import us.dot.its.jpo.conflictmonitor.monitor.models.events.RtcmMessageCountProgressionEvent;
 import us.dot.its.jpo.conflictmonitor.monitor.topologies.aggregation.RtcmMessageCountProgressionAggregationTopology;
@@ -29,84 +28,61 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
 @Slf4j
-@RunWith(Parameterized.class)
+@ExtendWith(MockitoExtension.class)
 public class RtcmMessageCountProgressionTopologyTest {
-
-    // Initialize mockito annotations
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     // Mock the aggregation subtopology tested separately from this test
     @Mock
     RtcmMessageCountProgressionAggregationTopology mockAggregationTopology;
 
     // Test various combinations of buffer time, grace period and punctuate time
-    @Parameterized.Parameters(name =
-            "{index}: buf={0} grace={1} check={2} msgCntA={3} msgCntB={4} propA={5} propB={6}")
-    public static Collection<Object[]> testParams() {
+    static Stream<Arguments> testParams() {
         final double prop1 = 123.4d;
         final double prop2 = 321.0d;
-        return Arrays.asList(new Object[][] {
-                {5000, 1200, 500, 10, 11, prop1, prop1},
-                {5000, 500, 500, 10, 11, prop1, prop1},
-                {5000, 500, 1000, 10, 11, prop1, prop1},
-                {5000, 500, 2500, 10, 11, prop1, prop1},
-                {2000, 500, 500, 10, 11, prop1, prop1},
-                {5000, 0, 500, 10, 11, prop1, prop1},
-                {5000, 1200, 500, 2, 2, prop1, prop1},
-                {5000, 500, 500, 2, 2, prop1, prop1},
-                {5000, 500, 1000, 2, 2, prop1, prop1},
-                {5000, 500, 2500, 2, 2, prop1, prop1},
-                {2000, 500, 500, 2, 2, prop1, prop1},
-                {5000, 0, 500, 2, 2, prop1, prop1},
-                {5000, 1200, 500, 10, 11, prop1, prop2},
-                {5000, 500, 500, 10, 11, prop1, prop2},
-                {5000, 500, 1000, 10, 11, prop1, prop2},
-                {5000, 500, 2500, 10, 11, prop1, prop2},
-                {2000, 500, 500, 10, 11, prop1, prop2},
-                {5000, 0, 500, 10, 11, prop1, prop2},
-                {5000, 1200, 500, 2, 2, prop1, prop2},
-                {5000, 500, 500, 2, 2, prop1, prop2},
-                {5000, 500, 1000, 2, 2, prop1, prop2},
-                {5000, 500, 2500, 2, 2, prop1, prop2},
-                {2000, 500, 500, 2, 2, prop1, prop2},
-                {5000, 0, 500, 2, 2, prop1, prop2},
-        });
+        return Stream.of(
+                Arguments.of(5000, 1200, 500, 10, 11, prop1, prop1),
+                Arguments.of(5000, 500, 500, 10, 11, prop1, prop1),
+                Arguments.of(5000, 500, 1000, 10, 11, prop1, prop1),
+                Arguments.of(5000, 500, 2500, 10, 11, prop1, prop1),
+                Arguments.of(2000, 500, 500, 10, 11, prop1, prop1),
+                Arguments.of(5000, 0, 500, 10, 11, prop1, prop1),
+                Arguments.of(5000, 1200, 500, 2, 2, prop1, prop1),
+                Arguments.of(5000, 500, 500, 2, 2, prop1, prop1),
+                Arguments.of(5000, 500, 1000, 2, 2, prop1, prop1),
+                Arguments.of(5000, 500, 2500, 2, 2, prop1, prop1),
+                Arguments.of(2000, 500, 500, 2, 2, prop1, prop1),
+                Arguments.of(5000, 0, 500, 2, 2, prop1, prop1),
+                Arguments.of(5000, 1200, 500, 10, 11, prop1, prop2),
+                Arguments.of(5000, 500, 500, 10, 11, prop1, prop2),
+                Arguments.of(5000, 500, 1000, 10, 11, prop1, prop2),
+                Arguments.of(5000, 500, 2500, 10, 11, prop1, prop2),
+                Arguments.of(2000, 500, 500, 10, 11, prop1, prop2),
+                Arguments.of(5000, 0, 500, 10, 11, prop1, prop2),
+                Arguments.of(5000, 1200, 500, 2, 2, prop1, prop2),
+                Arguments.of(5000, 500, 500, 2, 2, prop1, prop2),
+                Arguments.of(5000, 500, 1000, 2, 2, prop1, prop2),
+                Arguments.of(5000, 500, 2500, 2, 2, prop1, prop2),
+                Arguments.of(2000, 500, 500, 2, 2, prop1, prop2),
+                Arguments.of(5000, 0, 500, 2, 2, prop1, prop2)
+        );
     }
 
-    public RtcmMessageCountProgressionTopologyTest(int bufferTimeMs, int bufferGracePeriodMs, int checkIntervalMs,
-                                                   int msgCntA, int msgCntB, double propA, double propB) {
-        this.bufferTimeMs = bufferTimeMs;
-        this.bufferGracePeriodMs = bufferGracePeriodMs;
-        this.checkIntervalMs = checkIntervalMs;
-        this.msgCntA = msgCntA;
-        this.msgCntB = msgCntB;
-        this.propA = propA;
-        this.propB = propB;
-
-        // Expect event if msg count changes with unchanged contents
-        // or msg count doesn't change, but contents do
-        this.expectEvent = ((msgCntA != msgCntB) && (propA == propB))
-            || ((msgCntA == msgCntB) && (propA != propB));
-    }
-
-    private final int bufferTimeMs;
-    private final int bufferGracePeriodMs;
-    private final int checkIntervalMs;
-    private final int msgCntA;
-    private final int msgCntB;
-    private final boolean expectEvent;
-    private final double propA;
-    private final double propB;
+    private int bufferTimeMs;
+    private int bufferGracePeriodMs;
+    private int checkIntervalMs;
+    private int msgCntA;
+    private int msgCntB;
+    private boolean expectEvent;
+    private double propA;
+    private double propB;
 
     private final String rtcmInputTopicName = "topic.ProcessedRtcm";
     private final String eventOutputTopicName = "topic.CmRtcmMessageCountProgressionEvents";
@@ -121,8 +97,22 @@ public class RtcmMessageCountProgressionTopologyTest {
 
     private final long startTimestamp = 1750000000000L;
 
-    @Test
-    public void testRtcmMessageCountTopology() throws JsonProcessingException {
+    @ParameterizedTest(name = "{index}: buf={0} grace={1} check={2} msgCntA={3} msgCntB={4} propA={5} propB={6}")
+    @MethodSource("testParams")
+    public void testRtcmMessageCountTopology(int bufferTimeMs, int bufferGracePeriodMs, int checkIntervalMs,
+                                              int msgCntA, int msgCntB, double propA, double propB) throws JsonProcessingException {
+        this.bufferTimeMs = bufferTimeMs;
+        this.bufferGracePeriodMs = bufferGracePeriodMs;
+        this.checkIntervalMs = checkIntervalMs;
+        this.msgCntA = msgCntA;
+        this.msgCntB = msgCntB;
+        this.propA = propA;
+        this.propB = propB;
+        // Expect event if msg count changes with unchanged contents
+        // or msg count doesn't change, but contents do
+        this.expectEvent = ((msgCntA != msgCntB) && (propA == propB))
+            || ((msgCntA == msgCntB) && (propA != propB));
+
         Properties streamsConfig = createStreamsConfig();
         Topology topology = createTopology();
         final Instant startTime = Instant.ofEpochMilli(startTimestamp);

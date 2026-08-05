@@ -3,16 +3,14 @@ package us.dot.its.jpo.conflictmonitor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,9 +19,8 @@ import us.dot.its.jpo.conflictmonitor.monitor.models.events.app_health.KafkaStre
 import us.dot.its.jpo.conflictmonitor.monitor.models.notifications.app_health.KafkaStreamsAnomalyNotification;
 import us.dot.its.jpo.geojsonconverter.DateJsonMapper;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -35,14 +32,10 @@ import static org.mockito.Mockito.*;
 /**
  * Unit tests for {@link StateChangeHandler}.
  */
-@RunWith(Parameterized.class)
+@ExtendWith(MockitoExtension.class)
 public class StateChangeHandlerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(StateChangeHandlerTest.class);
-
-    // Use MockitoRule to initialize mocks to allow using parameterized JUnit runner
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     KafkaTemplate<String, String> kafkaTemplate;
@@ -65,28 +58,20 @@ public class StateChangeHandlerTest {
 
     final ObjectMapper mapper = DateJsonMapper.getInstance();
 
-    State oldState;
-    State newState;
-
-
-    public StateChangeHandlerTest(State oldState, State newState) {
-        this.oldState = oldState;
-        this.newState = newState;
+    static Stream<Arguments> getParams() {
+        return Stream.of(
+            Arguments.of(State.NOT_RUNNING, State.RUNNING),
+            Arguments.of(State.RUNNING, State.ERROR),
+            Arguments.of(State.RUNNING, State.REBALANCING)
+        );
     }
 
-    @Parameters
-    public static Collection<Object[]> getParams() {
-        return Arrays.asList(new Object[][] {
-            { State.NOT_RUNNING, State.RUNNING},
-            { State.RUNNING, State.ERROR},
-            { State.RUNNING, State.REBALANCING}
-        });
-    }
-    
-    @Test
-    public void testOnChange() throws JsonProcessingException {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    public void testOnChange(State oldState, State newState) throws JsonProcessingException {
         when(kafkaTemplate.send(eq(topic), eq(topology), anyString())).thenReturn(mockSendResult);
-        when(kafkaTemplate.send(eq(notificationTopic), anyString(), anyString())).thenReturn(mockSendResult);
+        // Only exercised when newState is ERROR; lenient to avoid unnecessary-stubbing failures for other parameters
+        lenient().when(kafkaTemplate.send(eq(notificationTopic), anyString(), anyString())).thenReturn(mockSendResult);
        
         
         StateChangeHandler handler = new StateChangeHandler(kafkaTemplate, topology, topic, notificationTopic);
