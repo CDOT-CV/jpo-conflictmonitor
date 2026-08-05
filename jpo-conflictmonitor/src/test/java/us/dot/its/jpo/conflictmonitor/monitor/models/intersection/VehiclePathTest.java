@@ -1,6 +1,6 @@
 package us.dot.its.jpo.conflictmonitor.monitor.models.intersection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.GeometryFactory;
 import us.dot.its.jpo.conflictmonitor.monitor.models.Intersection.Intersection;

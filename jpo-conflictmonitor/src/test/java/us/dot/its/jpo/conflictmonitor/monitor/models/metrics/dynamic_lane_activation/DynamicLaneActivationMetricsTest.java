@@ -3,7 +3,7 @@ package us.dot.its.jpo.conflictmonitor.monitor.models.metrics.dynamic_lane_activ
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import us.dot.its.jpo.geojsonconverter.DateJsonMapper;
 
 import java.time.Duration;

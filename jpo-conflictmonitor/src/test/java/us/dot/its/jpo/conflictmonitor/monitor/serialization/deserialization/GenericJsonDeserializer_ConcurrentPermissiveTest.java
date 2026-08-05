@@ -1,7 +1,7 @@
 package us.dot.its.jpo.conflictmonitor.monitor.serialization.deserialization;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import us.dot.its.jpo.conflictmonitor.monitor.models.config.IntersectionConfig;
 
 @Slf4j

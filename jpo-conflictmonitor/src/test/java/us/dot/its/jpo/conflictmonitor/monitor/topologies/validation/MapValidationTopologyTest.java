@@ -29,7 +29,7 @@ import us.dot.its.jpo.geojsonconverter.pojos.geojson.LineString;
 import us.dot.its.jpo.geojsonconverter.pojos.geojson.map.MapSharedProperties;
 import us.dot.its.jpo.geojsonconverter.pojos.geojson.map.ProcessedMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 import static java.util.stream.Collectors.toSet;

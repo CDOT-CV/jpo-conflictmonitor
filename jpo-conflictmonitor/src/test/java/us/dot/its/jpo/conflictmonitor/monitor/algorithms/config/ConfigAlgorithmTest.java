@@ -3,7 +3,7 @@ package us.dot.its.jpo.conflictmonitor.monitor.algorithms.config;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
