@@ -6,6 +6,7 @@ on:
     branches: [develop, master]
 
 jobs:
+  # TODO Setup sonar for CDOT-CV
   sonar:
     if: github.event.pull_request.base.repo.owner.login != 'CDOT-CV'
     runs-on: ubuntu-latest
