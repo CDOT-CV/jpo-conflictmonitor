@@ -6,7 +6,9 @@ on:
     branches: [develop, master]
 
 jobs:
+  # TODO Setup sonar for CDOT-CV
   sonar:
+    if: github.event.pull_request.base.repo.owner.login != 'CDOT-CV'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
@@ -35,6 +37,7 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io 
 
   sonar-batch:
+    if: github.event.pull_request.base.repo.owner.login != 'CDOT-CV'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
