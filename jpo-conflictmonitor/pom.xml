@@ -119,8 +119,9 @@
     <dependency>
       <groupId>usdot.jpo.ode</groupId>
       <artifactId>jpo-geojsonconverter</artifactId>
-      <version>3.3.0</version>
-      <!-- Exclude kafka dependencies to allow using newer streams version than geojsonconverter -->
+      <version>4.0.0-alpha1</version>
+      <!-- Exclude kafka-streams/kafka-clients so this project's own pinned versions stay
+           authoritative if they and geojsonconverter's versions ever diverge -->
       <exclusions>
         <exclusion>
           <groupId>org.apache.kafka</groupId>
@@ -128,35 +129,11 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka-streams-test-utils</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
           <artifactId>kafka-clients</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka-server</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka-server-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka_2.11</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka_2.13</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.springframework.kafka</groupId>
           <artifactId>spring-kafka</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.springframework.boot</groupId>
