@@ -260,7 +260,7 @@ public class AppHealthMonitor {
      * @param name the name of the topology
      * @return response entity containing the topology description as plain text
      */
-    @GetMapping(value = "/topologies/detail/{name}")
+    @GetMapping(value = "/topologies/detail/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
     public @ResponseBody ResponseEntity<String> topologyDetails(@PathVariable String name) {
         var topoMap = getTopologies();
         if (!topoMap.containsKey(name)) {
@@ -277,7 +277,7 @@ public class AppHealthMonitor {
      * @param name the name of the topology or "all" for all topologies
      * @return response entity containing the DOT graph as plain text
      */
-    @GetMapping(value = "/topologies/simple/{name}")
+    @GetMapping(value = "/topologies/simple/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
     public @ResponseBody ResponseEntity<String> topologySimpleGraph(@PathVariable String name) {
         TopologyGraph graph;
         var topoMap = getTopologies();
