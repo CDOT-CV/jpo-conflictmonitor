@@ -24,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,8 +51,6 @@ import us.dot.its.jpo.geojsonconverter.pojos.geojson.Point;
 import us.dot.its.jpo.geojsonconverter.pojos.geojson.bsm.ProcessedBsm;
 import us.dot.its.jpo.geojsonconverter.pojos.geojson.map.ProcessedMap;
 import us.dot.its.jpo.geojsonconverter.pojos.spat.ProcessedSpat;
-
-import javax.ws.rs.Produces;
 
 /**
  * REST controller providing health and configuration endpoints for the Conflict Monitor application.
@@ -263,8 +260,7 @@ public class AppHealthMonitor {
      * @param name the name of the topology
      * @return response entity containing the topology description as plain text
      */
-    @GetMapping(value = "/topologies/detail/{name}")
-    @Produces(MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/topologies/detail/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
     public @ResponseBody ResponseEntity<String> topologyDetails(@PathVariable String name) {
         var topoMap = getTopologies();
         if (!topoMap.containsKey(name)) {
@@ -281,8 +277,7 @@ public class AppHealthMonitor {
      * @param name the name of the topology or "all" for all topologies
      * @return response entity containing the DOT graph as plain text
      */
-    @GetMapping(value = "/topologies/simple/{name}")
-    @Produces(MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/topologies/simple/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
     public @ResponseBody ResponseEntity<String> topologySimpleGraph(@PathVariable String name) {
         TopologyGraph graph;
         var topoMap = getTopologies();

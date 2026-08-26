@@ -1,14 +1,12 @@
 package us.dot.its.jpo.conflictmonitor.monitor.algorithms.event_state_progression;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import us.dot.its.jpo.conflictmonitor.monitor.models.event_state_progression.PhaseStateTransition;
 import us.dot.its.jpo.conflictmonitor.monitor.models.event_state_progression.PhaseStateTransitionList;
 
@@ -19,7 +17,6 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092"})
 @DirtiesContext
 @Slf4j

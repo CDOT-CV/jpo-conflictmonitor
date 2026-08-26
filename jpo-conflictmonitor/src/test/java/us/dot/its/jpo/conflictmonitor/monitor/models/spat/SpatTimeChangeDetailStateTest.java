@@ -2,13 +2,12 @@ package us.dot.its.jpo.conflictmonitor.monitor.models.spat;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import us.dot.its.jpo.geojsonconverter.pojos.spat.ProcessedMovementEvent;
 import us.dot.its.jpo.geojsonconverter.pojos.spat.ProcessedMovementPhaseState;
@@ -21,34 +20,25 @@ import static org.hamcrest.Matchers.*;
 /**
  * Unit tests for {@link SpatTimeChangeDetailState}
  */
-@RunWith(Parameterized.class)
 public class SpatTimeChangeDetailStateTest {
 
-    ProcessedMovementState inputState;
-    SpatTimeChangeDetailState expectedResult;
     final static ZonedDateTime MAX_TIME = ZonedDateTime.parse("2023-03-13T00:00:30.999Z");
     final static ZonedDateTime MIN_TIME = ZonedDateTime.parse("2023-03-13T00:00:15.555Z");
     final static ProcessedMovementPhaseState EVENT_STATE = ProcessedMovementPhaseState.PERMISSIVE_MOVEMENT_ALLOWED;
     final static Integer SIGNAL_GROUP = 10;
 
-    public SpatTimeChangeDetailStateTest(ProcessedMovementState inputState, SpatTimeChangeDetailState expectedResult) {
-        this.inputState = inputState;
-        this.expectedResult = expectedResult;
-    }
-
-    @Parameters
-    public static Collection<Object[]> getParams() {
-        var params = new ArrayList<Object[]>();
+    static Stream<Arguments> getParams() {
+        var params = new ArrayList<Arguments>();
         params.add(state(null, null, null, null));
         params.add(state(MAX_TIME, null, null, SIGNAL_GROUP));
         params.add(state(null, MIN_TIME, null, SIGNAL_GROUP));
         params.add(state(MAX_TIME, MIN_TIME, null, SIGNAL_GROUP));
         params.add(state(null, null, EVENT_STATE, SIGNAL_GROUP));
         params.add(state(MAX_TIME, MIN_TIME, EVENT_STATE, SIGNAL_GROUP));
-        return params;
+        return params.stream();
     }
 
-    public static Object[] state(ZonedDateTime maxTime, ZonedDateTime minTime,
+    public static Arguments state(ZonedDateTime maxTime, ZonedDateTime minTime,
                                  ProcessedMovementPhaseState eventState, Integer signalGroup) {
 
         // Construct MovementState
@@ -94,16 +84,17 @@ public class SpatTimeChangeDetailStateTest {
 
         expectedResult.setEventState(eventState);
         System.out.println(expectedResult);
-        return new Object[] { state, expectedResult};
+        return Arguments.of(state, expectedResult);
     }
 
-   
-    
+
+
     /**
      * Test that {@link SpatTimeChangeDetailState#fromMovementState(ProcessedMovementState)} can deal with nulls
      */
-    @Test
-    public void testFromMovementState() {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    public void testFromMovementState(ProcessedMovementState inputState, SpatTimeChangeDetailState expectedResult) {
         SpatTimeChangeDetailState result = SpatTimeChangeDetailState.fromMovementState(inputState);
         assertThat(result, equalTo(expectedResult));
     }

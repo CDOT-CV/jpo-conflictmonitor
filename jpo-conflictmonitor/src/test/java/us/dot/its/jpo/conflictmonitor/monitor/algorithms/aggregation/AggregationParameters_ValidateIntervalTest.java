@@ -1,43 +1,32 @@
 package us.dot.its.jpo.conflictmonitor.monitor.algorithms.aggregation;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @Slf4j
-@RunWith(Parameterized.class)
 public class AggregationParameters_ValidateIntervalTest {
 
-    int interval;
-    ChronoUnit units;
-    boolean expectValid;
-
-    public AggregationParameters_ValidateIntervalTest(int interval, ChronoUnit units, boolean expectValid) {
-        this.interval = interval;
-        this.units = units;
-        this.expectValid = expectValid;
-    }
-
-    @Test
-    public void testValidateInterval() {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    public void testValidateInterval(int interval, ChronoUnit units, boolean expectValid) {
         var params = new AggregationParameters();
         params.setInterval(interval);
         params.setIntervalUnits(units);
         assertThat(String.format("params: %s", params), params.validateInterval(), equalTo(expectValid));
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> getParams() {
-        var params = new ArrayList<Object[]>();
+    static Stream<Arguments> getParams() {
+        var params = new ArrayList<Arguments>();
         for (int i : validSecondsMinutes) {
             addParams(params, i, SECONDS, true);
             addParams(params, i, MINUTES, true);
@@ -52,11 +41,11 @@ public class AggregationParameters_ValidateIntervalTest {
         for (int i : invalidHours) {
             addParams(params, i, HOURS, false);
         }
-        return params;
+        return params.stream();
     }
 
-    private static void addParams(ArrayList<Object[]> params, int interval, ChronoUnit units, boolean expectValid) {
-        params.add(new Object[] { interval, units, expectValid });
+    private static void addParams(ArrayList<Arguments> params, int interval, ChronoUnit units, boolean expectValid) {
+        params.add(Arguments.of(interval, units, expectValid));
     }
 
     private static final int[] validSecondsMinutes = new int[] { 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60 };

@@ -2,17 +2,15 @@ package us.dot.its.jpo.conflictmonitor.monitor;
 
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import us.dot.its.jpo.conflictmonitor.ConflictMonitorProperties;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.config.ConfigUpdateResult;
@@ -37,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // Test using Spring Mock MVC, see https://spring.io/guides/gs/testing-web/
 @WebMvcTest(ConfigController.class)
-@RunWith(SpringRunner.class)
 @ActiveProfiles("testConfig")
 public class ConfigControllerTest {
 
@@ -46,13 +43,13 @@ public class ConfigControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ConfigTopology configTopology;
 
-    @MockBean(name = "createKafkaTopics")
+    @MockitoBean(name = "createKafkaTopics")
     private KafkaAdmin.NewTopics createKafkaTopics;
 
-    @MockBean
+    @MockitoBean
     private ConflictMonitorProperties conflictMonitorProperties;
 
     @Test

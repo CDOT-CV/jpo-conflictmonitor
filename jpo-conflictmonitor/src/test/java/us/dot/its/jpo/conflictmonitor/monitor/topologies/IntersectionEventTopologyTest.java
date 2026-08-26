@@ -10,10 +10,10 @@ import org.apache.kafka.streams.kstream.internals.TimeWindow;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyWindowStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import us.dot.its.jpo.conflictmonitor.ConflictMonitorProperties;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.connection_of_travel.ConnectionOfTravelAlgorithm;
 import us.dot.its.jpo.conflictmonitor.monitor.algorithms.connection_of_travel.ConnectionOfTravelParameters;
@@ -46,11 +46,12 @@ import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IntersectionEventTopologyTest {
 
     final String bsmEventTopic = "topic.CMBsmEvents";
@@ -163,42 +164,42 @@ public class IntersectionEventTopologyTest {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_StreamsProperties() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setMessageIngestAlgorithm(messageIngestAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_LaneDirectionOfTravelAlgorithm() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
         intersectionEventTopology.setMessageIngestAlgorithm(messageIngestAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_LaneDirectionOfTravelParams() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
         intersectionEventTopology.setMessageIngestAlgorithm(messageIngestAlgorithm);
         intersectionEventTopology.setLaneDirectionOfTravelAlgorithm(laneDirectionOfTravelAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_ConnectionOfTravelAlgorithm() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
         intersectionEventTopology.setMessageIngestAlgorithm(messageIngestAlgorithm);
         intersectionEventTopology.setLaneDirectionOfTravelAlgorithm(laneDirectionOfTravelAlgorithm);
         intersectionEventTopology.setLaneDirectionOfTravelParams(laneDirectionOfTravelParameters);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_ConnectionOfTravelParams() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -206,10 +207,10 @@ public class IntersectionEventTopologyTest {
         intersectionEventTopology.setLaneDirectionOfTravelAlgorithm(laneDirectionOfTravelAlgorithm);
         intersectionEventTopology.setLaneDirectionOfTravelParams(laneDirectionOfTravelParameters);
         intersectionEventTopology.setConnectionOfTravelAlgorithm(connectionOfTravelAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_SignalStateVehicleCrossesAlgorithm() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -218,10 +219,10 @@ public class IntersectionEventTopologyTest {
         intersectionEventTopology.setLaneDirectionOfTravelParams(laneDirectionOfTravelParameters);
         intersectionEventTopology.setConnectionOfTravelAlgorithm(connectionOfTravelAlgorithm);
         intersectionEventTopology.setConnectionOfTravelParams(connectionOfTravelParameters);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_SignalStateVehicleCrossesParams() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -231,10 +232,10 @@ public class IntersectionEventTopologyTest {
         intersectionEventTopology.setConnectionOfTravelAlgorithm(connectionOfTravelAlgorithm);
         intersectionEventTopology.setConnectionOfTravelParams(connectionOfTravelParameters);
         intersectionEventTopology.setSignalStateVehicleCrossesAlgorithm(signalStateVehicleCrossesAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_SignalStateVehicleStopsAlgorithm() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -246,10 +247,10 @@ public class IntersectionEventTopologyTest {
         intersectionEventTopology.setConnectionOfTravelParams(connectionOfTravelParameters);
         intersectionEventTopology.setSignalStateVehicleCrossesAlgorithm(signalStateVehicleCrossesAlgorithm);
         intersectionEventTopology.setStopLinePassageParameters(signalStateVehicleCrossesParameters);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_SignalStateVehicleStopsParameters() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -262,10 +263,10 @@ public class IntersectionEventTopologyTest {
         intersectionEventTopology.setSignalStateVehicleCrossesAlgorithm(signalStateVehicleCrossesAlgorithm);
         intersectionEventTopology.setStopLinePassageParameters(signalStateVehicleCrossesParameters);
         intersectionEventTopology.setSignalStateVehicleStopsAlgorithm(signalStateVehicleStopsAlgorithm);
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testValidate_AlreadyRunning() {
         var intersectionEventTopology = new IntersectionEventTopology();
         intersectionEventTopology.setStreamsProperties(streamsProperties);
@@ -284,7 +285,7 @@ public class IntersectionEventTopologyTest {
         when(streams.state()).thenReturn(KafkaStreams.State.RUNNING);
         intersectionEventTopology.setStreams(streams);
 
-        intersectionEventTopology.validate();
+        assertThrows(IllegalStateException.class, intersectionEventTopology::validate);
     }
 
     @Test
