@@ -100,7 +100,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!--                <configuration>-->
+<!--                <configuration>-->
 <!--                    <enableProcessChecker>all</enableProcessChecker>-->
 <!--                    <shutdown>exit</shutdown>-->
 <!--                    &lt;!&ndash; Prevent JDK 21 warnings related to Mockito during tests. &ndash;&gt;-->
