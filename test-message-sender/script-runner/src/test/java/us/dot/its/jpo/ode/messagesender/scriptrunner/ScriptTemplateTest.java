@@ -1,6 +1,6 @@
 package us.dot.its.jpo.ode.messagesender.scriptrunner;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 

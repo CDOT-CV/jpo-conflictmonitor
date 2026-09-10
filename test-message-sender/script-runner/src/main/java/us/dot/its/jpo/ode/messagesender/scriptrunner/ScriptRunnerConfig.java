@@ -1,6 +1,5 @@
 package us.dot.its.jpo.ode.messagesender.scriptrunner;
 
-import org.springframework.boot.task.TaskSchedulerBuilder;
 import org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
