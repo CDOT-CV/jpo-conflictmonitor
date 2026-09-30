@@ -7,6 +7,7 @@ on:
     branches: [develop, master]
 
 jobs:
+  # Run SonarCloud analysis on pull requests from the same repository, and on pushes to develop and master branches.
   sonar:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -65,7 +66,7 @@ jobs:
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || github.repository_owner }} \
             -Dsonar.host.url=https://sonarcloud.io
 
-  # Fork pull requests cannot access SONAR_TOKEN, so run tests without SonarCloud.
+  # Run unit tests on pull requests from forks, since SonarCloud analysis cannot be run on remote origin pull requests.
   unit-tests:
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
