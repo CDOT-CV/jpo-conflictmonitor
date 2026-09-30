@@ -1,14 +1,14 @@
 name: CI
-on: 
+on:
+  workflow_dispatch:
   pull_request:
     types: [opened, reopened, synchronize]
   push:
     branches: [develop, master]
 
 jobs:
-  # TODO Setup sonar for CDOT-CV
   sonar:
-    if: github.event.pull_request.base.repo.owner.login != 'CDOT-CV'
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
@@ -33,11 +33,11 @@ jobs:
           mvn -s ../settings.xml -e clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar \
             -Dsonar.projectKey=${{ github.repository_owner }}_jpo-conflictmonitor \
             -Dsonar.projectName=jpo-conflictmonitor \
-            -Dsonar.organization=${{ github.repository_owner }} \
-            -Dsonar.host.url=https://sonarcloud.io 
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || github.repository_owner }} \
+            -Dsonar.host.url=https://sonarcloud.io
 
   sonar-batch:
-    if: github.event.pull_request.base.repo.owner.login != 'CDOT-CV'
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
@@ -62,12 +62,12 @@ jobs:
           mvn -s ../settings.xml -e clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar \
             -Dsonar.projectKey=${{ github.repository_owner }}_jpo-conflictmonitor-batch-processing \
             -Dsonar.projectName=jpo-conflictmonitor-batch-processing \
-            -Dsonar.organization=${{ github.repository_owner }} \
-            -Dsonar.host.url=https://sonarcloud.io 
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || github.repository_owner }} \
+            -Dsonar.host.url=https://sonarcloud.io
 
-  # Run unit tests if not USDOT
+  # Fork pull requests cannot access SONAR_TOKEN, so run tests without SonarCloud.
   unit-tests:
-    if: github.event.pull_request.base.repo.owner.login != 'usdot-jpo-ode'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -89,7 +89,7 @@ jobs:
           mvn -s ../settings.xml --batch-mode test
 
   batch-unit-tests:
-    if: github.event.pull_request.base.repo.owner.login != 'usdot-jpo-ode'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
